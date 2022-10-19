@@ -1,0 +1,24 @@
+import "std.um"
+
+
+type (
+    Vector2 = struct {x, y: real32}
+    Vector3 = struct {x, y, z: real32}
+    Color   = struct {r, g, b, a: uint8}
+)
+
+fn printFunc(msg: str)
+fn testMultiParam(msg: str, val:real32)
+fn testColorStruct(color: Color)
+fn testVec2Struct(v: Vector2)
+
+fn testCall() {
+    printFunc("Printing")
+    testMultiParam("testMulti", 32)
+    testColorStruct(Color{ 90,  90,  90, 255})
+    testVec2Struct(Vector2{ 90,  90 })
+}
+
+fn main() {
+    
+}

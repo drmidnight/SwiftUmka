@@ -1,0 +1,144 @@
+import "std.um"
+
+// Constants
+const a = 3
+const b* = 2.38  // Exported identifier
+const (
+    c = sin(b) / 5
+    d = "Hello" + " World"
+)
+
+// Types
+type IntPtr = ^uint16
+type Arr = [a]real
+type (
+    MyMap = map[str]real
+    Quat = struct {
+        q: [4]real
+        normalized: bool
+    }
+    Printable = interface {
+        print(): int
+    }
+    ErrFn = fn(code: int)
+)        
+
+// Variables
+var e: int
+var f: str = d + '!'
+var (
+    g: Arr = [3]real{2.3, -4.1 / 2, b}
+    h: [][5]int  // Dynamic arrays require calling make()
+    m: MyMap
+)
+q := Quat{q: [4]real{1, 0, 0, 0}, normalized: true}
+
+// Functions
+fn tan(x: real): real {return sin(x) / cos(x)}
+fn getValue(): (int, bool) {return 42, true}
+
+// Methods
+fn (a: ^Arr) print(): int {
+    printf("Arr: %s\n", repr(a^))
+    return 0
+}
+
+// Fibers
+fn childFunc(parent: fiber, buf: ^int) {
+    for i := 0; i < 5; i++ {
+        std.println("Child : i=" + std.itoa(i) + " buf=" + std.itoa(buf^))
+        buf^ = i * 3
+        fibercall(parent)
+    }
+}
+
+fn parentFunc() {
+    a := 0
+    child := fiberspawn(childFunc, &a)    
+    for i := 0; i < 10; i++ {
+        std.println("Parent: i=" + std.itoa(i) + " buf=" + std.itoa(a))
+        a = i * 7
+        if fiberalive(child) {
+            fibercall(child)
+        }
+    }    
+}   
+
+fn test*() {
+    // Assignment
+    h = make([][5]int, 3)
+    m = make(MyMap)
+    m["Hello Umka"] = 3.14
+    
+    // Declaration via assignment (with type inference)
+    sum := 0.0
+    
+    // Function call
+    y := tan(30 * std.pi / 180)
+    h = append(h, [5]int{10, 20, 30, 40, 50})
+    
+    // Method call
+    g.print()
+    
+    // Conditional
+    if x, ok := getValue(); ok {
+        std.println("Got " + repr(x))
+    }
+    
+    // Switch
+    switch a {
+        case 1, 3, 5, 7: std.println(std.itoa(a) + " is odd")
+        case 2, 4, 6, 8: std.println(std.itoa(a) + " is even")
+        default:         std.println("I don't know")
+    }
+
+    // Loop
+    for k := 1; k <= 128; k *= 2 {
+        std.println(repr(k))
+    }
+    
+    for i, x in g {
+        if fabs(x) > 1e12 {break}
+        if x < 0 {continue}
+        sum += x
+    }
+    
+        
+    std.println("len = " + std.itoa(len(h)))
+    std.println(std.ftoa(sum, 3))
+    
+    
+    // Interfaces
+    var printable: Printable = Arr{0.5, 0.7, 0.9}
+    printable.print()
+    
+    // Fibers
+    parentFunc()
+
+    // Repr
+    printf("\nrepr():\n")
+    printf("%s\n", repr(a))
+    printf("%s\n", repr(b))
+    printf("%s\n", repr(c))
+    printf("%s\n", repr(d))
+    printf("%s\n", repr(e))
+    printf("%s\n", repr(f))
+    printf("%s\n", repr(g))
+    printf("%s\n", repr(h))
+    printf("%s\n", repr(m))
+    printf("%s\n", repr(q))
+    printf("%s\n", repr(sum))
+    printf("%s\n", repr('a'))
+    printf("%s\n", repr(parentFunc))
+    printf("%s\n", repr(printable))
+    
+}
+
+fn main() {
+    test()
+}
+
+
+
+
+    
