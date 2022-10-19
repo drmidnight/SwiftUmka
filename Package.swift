@@ -19,7 +19,7 @@ let package = Package(
             exclude: [ "test.um" ]
         ),
         
-        .target(name: "CUmka", exclude: [], sources: ["umka-lang/src/"], publicHeadersPath: "umka-lang/src/", cSettings: []),
+        .target(name: "CUmka", exclude: ["umka-lang/src/umka.c"], sources: ["umka-lang/src/"], publicHeadersPath: "umka-lang/src/", cSettings: []),
         .testTarget(
             name: "UmkaTests",
             dependencies: ["Umka"]),
