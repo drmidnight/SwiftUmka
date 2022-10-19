@@ -104,7 +104,7 @@ public struct Umka {
 extension UmkaStackSlot {
     
     /// Returns the ptrVal as a string (unsafe-ish)
-    func ptrAsString() -> String? {
+    public func ptrAsString() -> String? {
         let ptr = self.ptrVal.assumingMemoryBound(to: UInt8.self)
         defer { ptr.deallocate() }
         let length = MemoryLayout.size(ofValue: ptr)
@@ -115,7 +115,7 @@ extension UmkaStackSlot {
     }
     
     /// Casts the ptrVal to expected type (unsafe-ish)
-    func ptrAsType<T>() -> T? {
+    public func ptrAsType<T>() -> T? {
         guard var ptr = self.ptrVal else { return nil }
         
         let result: T? = withUnsafeBytes(of: &ptr) { bytePtr in
