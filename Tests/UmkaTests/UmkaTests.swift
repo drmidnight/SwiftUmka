@@ -10,8 +10,36 @@ final class UmkaTests: XCTestCase {
         struct Vector2 {
             let x, y: Float32
         }
-        var filename = "/Users/cmorello/Developer/Swift/CUmka/Sources/Umka/test.um"
-        let umka = Umka.init(fileName:filename, stackSize: 1024*1024)
+        
+        let source = """
+        import "std.um"
+
+
+        type (
+            Vector2 = struct {x, y: real32}
+            Vector3 = struct {x, y, z: real32}
+            Color   = struct {r, g, b, a: uint8}
+        )
+
+        fn printFunc(msg: str)
+        fn testMultiParam(msg: str, val:real32)
+        fn testColorStruct(color: Color)
+        fn testVec2Struct(v: Vector2)
+
+        fn testCall() {
+            printFunc("Printing")
+            testMultiParam("testMulti", 32)
+            testColorStruct(Color{ 90,  90,  90, 255})
+            testVec2Struct(Vector2{ 90,  90 })
+            std.println("Test standard lib")
+        }
+
+        fn main() {
+            
+        }
+
+        """
+        let umka = Umka(sourceString: source, stackSize: 1024*1024, fileSystemEnabled: true, implLibsEnabled: true)
         defer { umka.free() }
         umka.addFunc(name: "printFunc") { slot, val in
             guard let message: String  = slot?.pointee.ptrAsString() else { return }

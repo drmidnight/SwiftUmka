@@ -17,6 +17,7 @@ fn testCall() {
     testMultiParam("testMulti", 32)
     testColorStruct(Color{ 90,  90,  90, 255})
     testVec2Struct(Vector2{ 90,  90 })
+    std.println("Test standard lib")
 }
 
 fn main() {
