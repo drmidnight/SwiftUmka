@@ -106,7 +106,6 @@ extension UmkaStackSlot {
     /// Returns the ptrVal as a string (unsafe-ish)
     public func ptrAsString() -> String? {
         let ptr = self.ptrVal.assumingMemoryBound(to: UInt8.self)
-        defer { ptr.deallocate() }
         let length = MemoryLayout.size(ofValue: ptr)
         let bytes = UnsafeBufferPointer(start: ptr, count: length)
         let message = String(bytes: bytes, encoding: .utf8)
