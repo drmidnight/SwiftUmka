@@ -1,0 +1,3 @@
+[submodule "Sources/CUmka/umka-lang"]
+	path = Sources/CUmka/umka-lang
+	url = https://github.com/drmidnight/umka-lang
