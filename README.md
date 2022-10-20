@@ -2,7 +2,7 @@
 
 Swift wrapper around Umka (https://github.com/vtereshkov/umka-lang)
 
-- Heavily work-in-progress but the core of the wrapper is there. 
+- Work-in-progress but most of the api is exposed. 
 - See UmkaTests.swift for basic usage.
 - Some convinience methods have been added to convert ptrVal to string and structs, though both are "unsafe"
 - Clone and `git submodule update --init --recursive`
