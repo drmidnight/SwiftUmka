@@ -4,12 +4,8 @@ import Foundation
 
 /*
  TODO: Add remaining api
- UMKA_API void umkaSetHook           (void *umka, UmkaHookEvent event, UmkaHookFunc hook);
- UMKA_API void *umkaAllocData        (void *umka, int size, UmkaExternFunc onFree);
  UMKA_API void umkaIncRef            (void *umka, void *ptr);
  UMKA_API void umkaDecRef            (void *umka, void *ptr);
- UMKA_API void *umkaGetMapItem       (void *umka, UmkaMap *map, UmkaStackSlot key);
- UMKA_API int  umkaGetDynArrayLen    (const void *array);
  */
 
 public typealias StackSlot = UmkaStackSlot
@@ -99,10 +95,6 @@ public struct Umka {
         return String(cString: CUmka.umkaGetVersion())
     }
 
-    public func setHook(event: HookEvent, hook: UmkaHookFunc) {
-        CUmka.umkaSetHook(_umka, event.internalType, hook)
-    }
-
     public enum HookEvent {
         case callEvent
         case returnEvent
@@ -114,6 +106,26 @@ public struct Umka {
             }
         }
     }
+
+    public func setHook(event: HookEvent, hook: UmkaHookFunc) {
+        CUmka.umkaSetHook(_umka, event.internalType, hook)
+    }
+
+    public func allocateData(size: Int, onFree: UmkaExternFunc) {
+        CUmka.umkaAllocData(_umka, Int32(size), onFree)
+    }
+
+    /// UMKA_API void *umkaGetMapItem       (void *umka, UmkaMap *map, UmkaStackSlot key);
+    public func getMapItem(map: inout UmkaMap, key: UmkaStackSlot) -> UnsafeMutableRawPointer? {
+        return CUmka.umkaGetMapItem(_umka, &map, key)
+    }
+
+    // FIXME: need to represent the UmkaDynArray type some how
+    /// UMKA_API int  umkaGetDynArrayLen    (const void *array);
+    // public func getDynArrayLen(array: inout UmkaDynArray) -> Int {
+    //     return Int(CUmka.umkaGetDynArrayLen(&array))
+    // }
+    
     
 }
 
