@@ -12,6 +12,7 @@ import Foundation
  UMKA_API int  umkaGetDynArrayLen    (const void *array);
  */
 
+public typealias StackSlot = UmkaStackSlot
 public struct Umka {
     let _umka = CUmka.umkaAlloc()
     
@@ -37,7 +38,7 @@ public struct Umka {
     }
     
     public func free() {
-        CUmka.free(_umka)
+        CUmka.umkaFree(_umka)
     }
     
     public func getError() -> String {
@@ -97,6 +98,22 @@ public struct Umka {
     public func getVersion() -> String {
         return String(cString: CUmka.umkaGetVersion())
     }
+
+    public func setHook(event: HookEvent, hook: UmkaHookFunc) {
+        CUmka.umkaSetHook(_umka, event.internalType, hook)
+    }
+
+    public enum HookEvent {
+        case callEvent
+        case returnEvent
+
+        internal var internalType: UmkaHookEvent {
+            switch self {
+                case .callEvent: return UMKA_HOOK_CALL
+                case .returnEvent: return UMKA_HOOK_RETURN
+            }
+        }
+    }
     
 }
 
@@ -109,7 +126,7 @@ extension UmkaStackSlot {
         let length = MemoryLayout.size(ofValue: ptr)
         let bytes = UnsafeBufferPointer(start: ptr, count: length)
         let message = String(bytes: bytes, encoding: .utf8)
-       
+        bytes.deallocate()
         return message
     }
     

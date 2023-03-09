@@ -23,3 +23,7 @@ fn testCall() {
 fn main() {
     
 }
+
+fn testPassingParams(color: Color) {
+    std.println(color)
+}

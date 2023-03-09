@@ -8,7 +8,7 @@ final class UmkaTests: XCTestCase {
         }
         
         struct Vector2 {
-            let x, y: Float32
+            let x, y: Float
         }
         
         let source = """
@@ -32,6 +32,16 @@ final class UmkaTests: XCTestCase {
             testVec2Struct(Vector2{ 90,  90 })
             std.println("Test standard lib")
         }
+        
+        fn testPassingParams(color: Color) {
+            std.println(repr(color))
+
+        }
+        
+        fn testPassingParamsVec(vec: Vector2) {
+            std.println(repr(vec))
+        }
+
 
         """
         
@@ -68,6 +78,27 @@ final class UmkaTests: XCTestCase {
         let pass = umka.call(funcInt)
         if pass == false { 
             print(umka.getError())
+        }
+        
+        let paramFuncInt = umka.getFunc(funcName: "testPassingParams")
+        var color = Color(r: 10, g: 10, b: 10, a: 10)
+        let colorPointer = UnsafeMutablePointer<String>.allocate(capacity: 1)
+        colorPointer.initialize(to: "Test")
+        defer {
+            colorPointer.deallocate()
+        }
+        
+        // seems to have a different layout which results in weird values on umka side
+        var stackSlot = StackSlot(ptrVal: colorPointer)
+        
+        let paramFuncPass = umka.call(paramFuncInt, numParamSlots: 1, params: &stackSlot)
+        
+        if paramFuncPass == false {
+            print(umka.getError())
+        }
+
+        umka.setHook(event:.callEvent) { filename, file, line in
+
         }
        
         print(umka.getVersion())
